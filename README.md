@@ -1,16 +1,27 @@
-# enc_visioners
+# 🏦 Ethiopian Banknote Recognizer App for the Blind  
+_A Flutter-based mobile app for recognizing Ethiopian birr denominations and reading them aloud for visually impaired users._
 
-A new Flutter project.
+## Features
+- Recognizes Ethiopian birr:10 , 50, 100, 200
+- Audio feedback in Amharic, Oromo, Tigrigna, English(we are working on it for now English only)
+- Camera-based recognition
+- Volume buttons to capture
+- AI-powered detection via Roboflow
 
-## Getting Started
+## How It Works
+1️⃣ User selects language (we are working on it )
+2️⃣ Uses camera to capture banknote  
+3️⃣ Sends image to Roboflow API  
+4️⃣ Gets the result and reads it aloud  
+5️⃣ Vibrates for confirmation
 
-This project is a starting point for a Flutter application.
+## Built With
+- Flutter (Dart)
+- Camera
+- HTTP
+- TTS (Text to Speech)
+- Vibration
+- Roboflow API
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+#There are some limitations to adjust like make it offline etc..
