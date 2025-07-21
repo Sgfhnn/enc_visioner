@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -8,7 +7,13 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:vibration/vibration.dart';
 
-void main() => runApp(const BanknoteRecognizerApp());
+late List<CameraDescription> cameras;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
+  runApp(const BanknoteRecognizerApp());
+}
 
 class BanknoteRecognizerApp extends StatelessWidget {
   const BanknoteRecognizerApp({super.key});
@@ -30,7 +35,7 @@ class LanguageSelectionScreen extends StatelessWidget {
   void _speakIntro(String language, FlutterTts flutterTts) async {
     await flutterTts.setLanguage(language);
     await flutterTts.speak(
-      "Please point the camera to the banknote and capture it using the volume buttons.",
+      "Please point the camera to the banknote and capture it by pressing the capture button.",
     );
   }
 
@@ -77,6 +82,18 @@ class LanguageSelectionScreen extends StatelessWidget {
               );
             },
           ),
+          ListTile(
+            title: const Text("Tigrigna"),
+            onTap: () {
+              _speakIntro("ti-ET", flutterTts);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CameraScreen(languageCode: "ti-ET"),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -94,18 +111,15 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen> {
   CameraController? _controller;
   late FlutterTts flutterTts;
-  late StreamSubscription<dynamic> _volumeSubscription;
 
   @override
   void initState() {
     super.initState();
     flutterTts = FlutterTts();
     _initializeCamera();
-   
   }
 
   Future<void> _initializeCamera() async {
-    final cameras = await availableCameras();
     final camera = cameras.first;
     _controller = CameraController(camera, ResolutionPreset.medium);
     await _controller!.initialize();
@@ -115,7 +129,6 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   void dispose() {
     _controller?.dispose();
-    _volumeSubscription.cancel();
     super.dispose();
   }
 
@@ -130,7 +143,7 @@ class _CameraScreenState extends State<CameraScreen> {
   Future<void> _classifyImage(File imageFile) async {
     final base64Image = base64Encode(await imageFile.readAsBytes());
     final response = await http.post(
-      Uri.parse("https://serverless.roboflow.com/my-first-project-pv6jr/2?api_key=YOUR_API_KEY"),
+      Uri.parse("https://serverless.roboflow.com/my-first-project-pv6jr/2?api_key=97osXVxna9rvKDAKRB7o"),
       headers: {"Content-Type": "application/x-www-form-urlencoded"},
       body: base64Image,
     );
@@ -143,13 +156,15 @@ class _CameraScreenState extends State<CameraScreen> {
     }
 
     await flutterTts.setLanguage(widget.languageCode);
-    await flutterTts.speak("This is $label Ethiopian birr.");
+    for (int i = 0; i < 3; i++) {
+      await flutterTts.speak("This is $label Ethiopian birr.");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (!(_controller?.value.isInitialized ?? false)) {
-      return const Center(child: CircularProgressIndicator());
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -157,11 +172,11 @@ class _CameraScreenState extends State<CameraScreen> {
         children: [
           CameraPreview(_controller!),
           Positioned(
-            bottom: 20,
-            left: 20,
-            child: Text(
-              "Volume Button to Capture",
-              style: TextStyle(color: Colors.white, fontSize: 18),
+            bottom: 50,
+            left: MediaQuery.of(context).size.width / 2 - 50,
+            child: ElevatedButton(
+              onPressed: _captureImage,
+              child: const Text('Capture'),
             ),
           ),
         ],
@@ -169,4 +184,3 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 }
-
