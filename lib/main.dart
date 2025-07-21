@@ -1,4 +1,5 @@
-mport 'dart:io';
+import 'dart:async';
+import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -101,7 +102,7 @@ class _CameraScreenState extends State<CameraScreen> {
     super.initState();
     flutterTts = FlutterTts();
     _initializeCamera();
-    _volumeSubscription = VolumeWatcher.addListener((volume) {
+     VolumeWatcher.addListener((volume) {
       _captureImage();
     });
   }
