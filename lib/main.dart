@@ -7,7 +7,6 @@ import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:vibration/vibration.dart';
-import 'package:volume_watcher/volume_watcher.dart';
 
 void main() => runApp(const BanknoteRecognizerApp());
 
@@ -102,9 +101,7 @@ class _CameraScreenState extends State<CameraScreen> {
     super.initState();
     flutterTts = FlutterTts();
     _initializeCamera();
-     VolumeWatcher.addListener((volume) {
-      _captureImage();
-    });
+   
   }
 
   Future<void> _initializeCamera() async {
