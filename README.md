@@ -9,11 +9,12 @@ _A Flutter-based mobile app for recognizing Ethiopian birr denominations and rea
 - AI-powered detection via Roboflow
 
 ## How It Works
-1️⃣ User selects language (we are working on it )
-2️⃣ Uses camera to capture banknote  
-3️⃣ Sends image to Roboflow API  
-4️⃣ Gets the result and reads it aloud  
-5️⃣ Vibrates for confirmation
+1️⃣users use voice access or other app or built in features like Talkback to open the app by calling the name of the app
+2️⃣ User selects language (we are working on it )
+3️⃣ Uses camera to capture banknote  
+4️⃣ Sends image to Roboflow API  
+5️⃣Gets the result and reads it aloud  
+6⃣ Vibrates for confirmation
 
 ## Built With
 - Flutter (Dart)
@@ -25,3 +26,9 @@ _A Flutter-based mobile app for recognizing Ethiopian birr denominations and rea
 
 
 #There are some limitations to adjust like make it offline etc..
+
+[Visit the API](https://roboflow.com)
+
+[GitHub Repo](https://github.com/YourUsername/YourRepo)
+
+![Flutter](https://img.shields.io/badge/flutter-v3.22-blue)
