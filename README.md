@@ -10,7 +10,7 @@ _A Flutter-based mobile app for recognizing Ethiopian birr denominations and rea
 
 ## How It Works
 1️⃣users use voice access or other app or built in features like Talkback to open the app by calling the name of the app
-2️⃣ User selects language (we are working on it )
+2️⃣ User selects language (im working on it )
 3️⃣ Uses camera to capture banknote  
 4️⃣ Sends image to Roboflow API  
 5️⃣Gets the result and reads it aloud  
