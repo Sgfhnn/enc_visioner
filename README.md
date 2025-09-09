@@ -30,8 +30,6 @@ _A Flutter-based mobile app for recognizing Ethiopian birr denominations and rea
 
 [📥To Download voice access app from Google play store ](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://play.google.com/store/apps/details%3Fid%3Dcom.google.android.apps.accessibility.voiceaccess%26hl%3Den_US%26referrer%3Dutm_source%253Dgoogle%2526utm_medium%253Dorganic%2526utm_term%253Dvoice%2Baccess%2Bapp%26pcampaignid%3DAPPU_1_40p_aJrrHMLskdUP1pSbqAg&ved=2ahUKEwja6NWjhdCOAxVCdqQEHVbKBoUQ5YQBegQIChAC&usg=AOvVaw3U-LIHXWdU_Qv0kmA25Fe1)
 
-[📥To Download The app as apk](https://api.codemagic.io/artifacts/751e8605-2652-477f-a5e9-ce511bb1ebb6/e3276f07-ed70-4218-a04d-cf689016117c/app-release.apk)
 
-[📥To Download The app as aab](https://api.codemagic.io/artifacts/166edcb9-6d7d-4a98-bc92-706e6aef1333/d13392fe-44a0-41fe-8db8-484d11a7d86b/app-debug.aab)
 
 ![Flutter](https://img.shields.io/badge/flutter-v3.22-blue)
