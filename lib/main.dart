@@ -341,7 +341,7 @@ class _CameraScreenState extends State<CameraScreen>
   Timer? _autoDetectTimer;
 
   // For volume key capture
-  final FocusNode _focusNode = FocusNode();
+
 
   // TTS language fallback
   String _ttsLanguage = 'en-US';
@@ -363,9 +363,21 @@ class _CameraScreenState extends State<CameraScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
-    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
+    // Global hardware key listener
+    HardwareKeyboard.instance.addHandler(_onHardwareKey);
+  }
+
+  bool _onHardwareKey(KeyEvent event) {
+    if (event is KeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.audioVolumeUp ||
+          event.logicalKey == LogicalKeyboardKey.audioVolumeDown) {
+        if (!_isProcessing) {
+          _captureImage();
+        }
+        return true; // handled
+      }
+    }
+    return false;
   }
 
   /// Check if the selected TTS language is available on the device.
@@ -379,20 +391,12 @@ class _CameraScreenState extends State<CameraScreen>
       _ttsLanguage = 'en-US';
       _nativeLanguageAvailable = false;
     }
-  }
-
-  /// Handle hardware key events (volume up/down → capture)
-  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
-    if (event is KeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.audioVolumeUp ||
-          event.logicalKey == LogicalKeyboardKey.audioVolumeDown) {
-        if (!_isProcessing) {
-          _captureImage();
-        }
-        return KeyEventResult.handled;
-      }
+    // FORCE ENGLISH FALLBACK:
+    // If native language is not available, we force English immediately.
+    // Even if it IS available, user reported "weird voice", so let's default to English for clarity unless explicitly overridden.
+    if (!_nativeLanguageAvailable) {
+      _ttsLanguage = 'en-US';
     }
-    return KeyEventResult.ignored;
   }
 
   Future<void> _initializeCamera() async {
@@ -404,10 +408,10 @@ class _CameraScreenState extends State<CameraScreen>
 
   @override
   void dispose() {
+    HardwareKeyboard.instance.removeHandler(_onHardwareKey);
     _autoDetectTimer?.cancel();
     _controller?.dispose();
     _pulseController.dispose();
-    _focusNode.dispose();
     super.dispose();
   }
 
@@ -595,11 +599,7 @@ class _CameraScreenState extends State<CameraScreen>
       );
     }
 
-    return Focus(
-      focusNode: _focusNode,
-      autofocus: true,
-      onKeyEvent: _onKeyEvent,
-      child: Scaffold(
+    return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -778,7 +778,6 @@ class _CameraScreenState extends State<CameraScreen>
           ),
         ],
       ),
-    ),
     );
   }
 }
