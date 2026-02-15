@@ -2,13 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:vibration/vibration.dart';
-import 'package:volume_key_board/volume_key_board.dart';
 
 import 'translations.dart';
 import 'app_theme.dart';
@@ -341,6 +340,13 @@ class _CameraScreenState extends State<CameraScreen>
   String? _lastResult;
   Timer? _autoDetectTimer;
 
+  // For volume key capture
+  final FocusNode _focusNode = FocusNode();
+
+  // TTS language fallback
+  String _ttsLanguage = 'en-US';
+  bool _nativeLanguageAvailable = true;
+
   // Capture button animation
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
@@ -350,6 +356,7 @@ class _CameraScreenState extends State<CameraScreen>
     super.initState();
     flutterTts = FlutterTts();
     _initializeCamera();
+    _checkTtsLanguage();
 
     // Pulse animation for the capture button
     _pulseController = AnimationController(
@@ -359,15 +366,33 @@ class _CameraScreenState extends State<CameraScreen>
     _pulseAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
-
-    // Volume key listener
-    VolumeKeyBoard.instance.addListener(_onVolumeKeyPressed);
   }
 
-  void _onVolumeKeyPressed(VolumeKey event) {
-    if (!_isProcessing) {
-      _captureImage();
+  /// Check if the selected TTS language is available on the device.
+  /// Falls back to English if not.
+  Future<void> _checkTtsLanguage() async {
+    final available = await flutterTts.isLanguageAvailable(widget.languageCode);
+    if (available == true) {
+      _ttsLanguage = widget.languageCode;
+      _nativeLanguageAvailable = true;
+    } else {
+      _ttsLanguage = 'en-US';
+      _nativeLanguageAvailable = false;
     }
+  }
+
+  /// Handle hardware key events (volume up/down → capture)
+  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
+    if (event is KeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.audioVolumeUp ||
+          event.logicalKey == LogicalKeyboardKey.audioVolumeDown) {
+        if (!_isProcessing) {
+          _captureImage();
+        }
+        return KeyEventResult.handled;
+      }
+    }
+    return KeyEventResult.ignored;
   }
 
   Future<void> _initializeCamera() async {
@@ -382,7 +407,7 @@ class _CameraScreenState extends State<CameraScreen>
     _autoDetectTimer?.cancel();
     _controller?.dispose();
     _pulseController.dispose();
-    VolumeKeyBoard.instance.removeListener();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -437,23 +462,28 @@ class _CameraScreenState extends State<CameraScreen>
           Vibration.vibrate(duration: 300);
         }
 
-        // Speak the result in the selected language — repeat 2 times
-        await flutterTts.setLanguage(widget.languageCode);
+        // Speak the result — use native language if available, else English
+        await flutterTts.setLanguage(_ttsLanguage);
+        final message = _nativeLanguageAvailable
+            ? AppTranslations.result(widget.languageCode, label)
+            : AppTranslations.result('en-US', label);
         for (int i = 0; i < 2; i++) {
-          await flutterTts.speak(
-            AppTranslations.result(widget.languageCode, label),
-          );
+          await flutterTts.speak(message);
           await flutterTts.awaitSpeakCompletion(true);
         }
       } else {
-        await flutterTts.setLanguage(widget.languageCode);
-        await flutterTts
-            .speak(AppTranslations.noDetection(widget.languageCode));
+        await flutterTts.setLanguage(_ttsLanguage);
+        final noDetMsg = _nativeLanguageAvailable
+            ? AppTranslations.noDetection(widget.languageCode)
+            : AppTranslations.noDetection('en-US');
+        await flutterTts.speak(noDetMsg);
       }
     } catch (e) {
-      await flutterTts.setLanguage(widget.languageCode);
-      await flutterTts
-          .speak(AppTranslations.noDetection(widget.languageCode));
+      await flutterTts.setLanguage(_ttsLanguage);
+      final noDetMsg = _nativeLanguageAvailable
+          ? AppTranslations.noDetection(widget.languageCode)
+          : AppTranslations.noDetection('en-US');
+      await flutterTts.speak(noDetMsg);
     } finally {
       if (mounted) setState(() => _isProcessing = false);
     }
@@ -463,15 +493,19 @@ class _CameraScreenState extends State<CameraScreen>
   void _toggleAutoDetect() async {
     setState(() => _autoDetectMode = !_autoDetectMode);
 
-    await flutterTts.setLanguage(widget.languageCode);
+    await flutterTts.setLanguage(_ttsLanguage);
 
     if (_autoDetectMode) {
-      await flutterTts
-          .speak(AppTranslations.autoModeOn(widget.languageCode));
+      final onMsg = _nativeLanguageAvailable
+          ? AppTranslations.autoModeOn(widget.languageCode)
+          : AppTranslations.autoModeOn('en-US');
+      await flutterTts.speak(onMsg);
       _startAutoDetect();
     } else {
-      await flutterTts
-          .speak(AppTranslations.autoModeOff(widget.languageCode));
+      final offMsg = _nativeLanguageAvailable
+          ? AppTranslations.autoModeOff(widget.languageCode)
+          : AppTranslations.autoModeOff('en-US');
+      await flutterTts.speak(offMsg);
       _autoDetectTimer?.cancel();
     }
   }
@@ -519,10 +553,11 @@ class _CameraScreenState extends State<CameraScreen>
               Vibration.vibrate(duration: 300);
             }
 
-            await flutterTts.setLanguage(widget.languageCode);
-            await flutterTts.speak(
-              AppTranslations.result(widget.languageCode, label),
-            );
+            await flutterTts.setLanguage(_ttsLanguage);
+            final msg = _nativeLanguageAvailable
+                ? AppTranslations.result(widget.languageCode, label)
+                : AppTranslations.result('en-US', label);
+            await flutterTts.speak(msg);
             await flutterTts.awaitSpeakCompletion(true);
           }
         }
@@ -560,7 +595,11 @@ class _CameraScreenState extends State<CameraScreen>
       );
     }
 
-    return Scaffold(
+    return Focus(
+      focusNode: _focusNode,
+      autofocus: true,
+      onKeyEvent: _onKeyEvent,
+      child: Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -739,6 +778,7 @@ class _CameraScreenState extends State<CameraScreen>
           ),
         ],
       ),
+    ),
     );
   }
 }
