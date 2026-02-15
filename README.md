@@ -1,35 +1,58 @@
-# 🏦 Ethiopian Banknote Recognizer App for the Blind  
-_A Flutter-based mobile app for recognizing Ethiopian birr denominations and reading them aloud for visually impaired users._
+# 🏦 Birr Vision - Ethiopian Banknote Recognizer
 
-## Features
-- Recognizes Ethiopian birr:10 , 50, 100, 200
-- Audio feedback in Amharic, Oromo, Tigrigna, English(we are working on it for now English only)
-- Camera-based recognition
-- Volume buttons to capture
-- AI-powered detection via Roboflow
+A Flutter-based mobile app designed to assist visually impaired users in recognizing Ethiopian Birr banknotes. The app uses AI object detection (Roboflow) to identify denominations and provides audio feedback in multiple local languages.
 
-## How It Works
-1️⃣users use voice access or other app or built in features like Talkback to open the app by calling the name of the app
-2️⃣ User selects language (im working on it )
-3️⃣ Uses camera to capture banknote  
-4️⃣ Sends image to Roboflow API  
-5️⃣Gets the result and reads it aloud  
-6⃣ Vibrates for confirmation
+## ✨ Features
 
-## Built With
-- Flutter (Dart)
-- Camera
-- HTTP
-- TTS (Text to Speech)
-- Vibration
-- Roboflow API
+-   **💷 Detects Ethiopian Birr**: Recognizes 10, 50, 100, and 200 ETB denominations.
+-   **🗣️ Multi-Language Support**:
+    -   **English** (Default)
+    -   **Amharic** (አማርኛ)
+    -   **Oromo** (Afaan Oromoo)
+    -   **Tigrigna** (ትግርኛ)
+    -   *includes smart off-line fallback to English pronunciation if local voices are missing.*
+-   **🔊 Audio Feedback**: Reads the detected denomination aloud.
+-   **📳 Haptic Feedback**: Vibrates upon successful detection.
+-   **📸 Easy Capture**:
+    -   Tap the large capture button.
+    -   **Volume Buttons**: Press Volume Up or Down to capture (hardware shortcut).
+-   **🤖 Auto-Detect Mode**: Automatically scans and announces banknotes when confidence is high (>70%).
+-   **🎨 Premium UI**: Modern glassmorphism design with dark mode, animations, and high-contrast accessibility.
 
+## 🚀 How It Works
 
-#There are some limitations to adjust like make it offline etc..
+1.  **Open the App**: Launch "Birr Vision". Use TalkBack or Voice Access if needed.
+2.  **Select Language**: Choose your preferred language from the home screen.
+3.  **Point & Capture**:
+    -   Point the camera at a banknote.
+    -   Press the **Volume Button** or the on-screen **Capture** button.
+    -   Or enable **"Auto"** mode to let the app scan automatically.
+4.  **Listen**: The app will vibrate and speak the value (e.g., "One Hundred Birr").
 
+## 🛠️ Built With
 
-[📥To Download voice access app from Google play store ](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://play.google.com/store/apps/details%3Fid%3Dcom.google.android.apps.accessibility.voiceaccess%26hl%3Den_US%26referrer%3Dutm_source%253Dgoogle%2526utm_medium%253Dorganic%2526utm_term%253Dvoice%2Baccess%2Bapp%26pcampaignid%3DAPPU_1_40p_aJrrHMLskdUP1pSbqAg&ved=2ahUKEwja6NWjhdCOAxVCdqQEHVbKBoUQ5YQBegQIChAC&usg=AOvVaw3U-LIHXWdU_Qv0kmA25Fe1)
+-   **Flutter** (Dart)
+-   **Roboflow API** (Object Detection)
+-   **Flutter TTS** (Text-to-Speech)
+-   **Hardware Keyboard Events** (Volume Capture)
+-   **Google Fonts** (Outfit)
+-   **Vibration**
 
+## 📦 Installation
 
+1.  Clone the repo:
+    ```bash
+    git clone https://github.com/Sgfhnn/enc_visioner.git
+    ```
+2.  Install dependencies:
+    ```bash
+    flutter pub get
+    ```
+3.  Run on device:
+    ```bash
+    flutter run
+    ```
 
-![Flutter](https://img.shields.io/badge/flutter-v3.22-blue)
+## 🤝 Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request.
