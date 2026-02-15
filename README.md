@@ -19,6 +19,16 @@ A Flutter-based mobile app designed to assist visually impaired users in recogni
 -   **🤖 Auto-Detect Mode**: Automatically scans and announces banknotes when confidence is high (>70%).
 -   **🎨 Premium UI**: Modern glassmorphism design with dark mode, animations, and high-contrast accessibility.
 
+## 📸 Screenshots
+
+| Splash Screen | Language Selection |
+|:---:|:---:|
+| <img src="assets/screenshot/splash.jpg" width="250"> | <img src="assets/screenshot/language_selection.jpg" width="250"> |
+
+| Manual Capture | Auto-Detect Mode |
+|:---:|:---:|
+| <img src="assets/screenshot/manual_capture.jpg" width="250"> | <img src="assets/screenshot/auto_capture.jpg" width="250"> |
+
 ## 🚀 How It Works
 
 1.  **Open the App**: Launch "Birr Vision". Use TalkBack or Voice Access if needed.
